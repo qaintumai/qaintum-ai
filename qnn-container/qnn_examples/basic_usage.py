@@ -19,7 +19,8 @@ def main():
         active_sd=0.001,
         passive_sd=0.2,
         gain=1.0,
-        normalize_inputs=True
+        normalize_inputs=True,
+        dropout_rate=0.2
     )
 
     # Example input data
