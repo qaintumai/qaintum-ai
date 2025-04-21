@@ -1,0 +1,98 @@
+# ================================
+# macOS-specific files
+# ================================
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Files that might appear on external drives
+.Spotlight-V100
+.Trashes
+
+# ================================
+# Virtual environments
+# ================================
+# Ignore all virtual environment directories
+**/venv/
+**/env/
+**/.env/
+**/myenv/
+
+# ================================
+# IDE/editor-specific files
+# ================================
+# Visual Studio Code
+.vscode/
+
+# PyCharm/IntelliJ IDEA
+.idea/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# ================================
+# Python-specific files
+# ================================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ================================
+# Data files
+# ================================
+# Ignore all files in the `data/` directory
+/data/
+
+# ================================
+# Environment variables
+# ================================
+# Ignore `.env` files containing sensitive information
+.env
+.env.local
+.env.*.local
+
+# ================================
+# Logs and databases
+# ================================
+*.log
+*.sqlite3
+*.db
+
+# ================================
+# Testing and coverage
+# ================================
+.coverage
+htmlcov/
+.tox/
+.nox/
+.cache/
+pytest_cache/
+
+# ================================
+# Other temporary files
+# ================================
+*.tmp
+*~
+*.bak
+*.swp
