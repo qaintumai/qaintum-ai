@@ -43,11 +43,11 @@ QNNs require a substantially reduced number of parameters to train due to its in
 - **Quantum Transformer (QT)**:
 Quantum Transformers (QTs) extend transformer-based architectures by replacing the feedforward layers with QNNs. Key components of a transformer include:
 
-**Input Encoding: Input embeddings with positional encoding for contextual understanding.
+ * Input Encoding: Input embeddings with positional encoding for contextual understanding.
 
-Multi-Headed Attention: Query, Key, and Value mechanisms.
+ * Multi-Headed Attention: Query, Key, and Value mechanisms.
 
-*Feedforward Layer: Classical neural network, replaced by QNN for improved efficiency and parameter reduction.
+ * Feedforward Layer: Classical neural network, replaced by QNN for improved efficiency and parameter reduction.
 
 - **Quantum Small Language Model (QSML) (Coming Soon)**:
 QSML is designed as a compact, enterprise-grade language model leveraging quantum-enhanced transformers. Unlike traditional large language models, QSML utilizes optimized transformer blocks combined with quantum-enhanced learning techniques to provide efficient, domain-specific AI solutions.
@@ -62,7 +62,7 @@ QSML is designed as a compact, enterprise-grade language model leveraging quantu
 
 ### Clone the Repository
 ```sh
-git clone https://github.com/qaintumai/quantum.git
+git clone https://github.com/qaintumai/qaintum-ai.git
 cd quantum
 ```
 
@@ -105,29 +105,11 @@ or
 
 ```sh
 pip install -e .
-./examples/qnn_binary_classifier.py
-```
-
-You should see the following output:
-
-```sh
-loss tensor(0.5000, grad_fn=<MseLossBackward0>)
-Average loss over epoch 1: 0.0250
-loss tensor(0.5781, grad_fn=<MseLossBackward0>)
-Average loss over epoch 2: 0.0289
-loss tensor(0.5312, grad_fn=<MseLossBackward0>)
-Average loss over epoch 3: 0.0266
-loss tensor(0.5312, grad_fn=<MseLossBackward0>)
-Average loss over epoch 4: 0.0266
-loss tensor(0.5000, grad_fn=<MseLossBackward0>)
-Average loss over epoch 5: 0.0250
-loss tensor(0.5625, grad_fn=<MseLossBackward0>)
-Average loss over epoch 6: 0.0281
-Accuracy: 85.0%
+./examples/basic_usage.py
 ```
 
 ### Make Changes
-Edit, add, or remove files as needed in your project. For example, you might edit a file called qnn_binary_classification.py.
+Edit, add, or remove files as needed in your project. For example, you might edit a file called basic_usage.py
 
 ### Stage the Changes
 Add the files you changed to the staging area.
