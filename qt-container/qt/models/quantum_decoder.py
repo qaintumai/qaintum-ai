@@ -13,6 +13,8 @@
 # limitations under the License.
 # ==============================================================================
 
+# qt.models.quantum_decoder.py
+
 # Define the QuantumDecoder class
 from torch import nn
 from qt-container.qt.layers.multi_headed_attention import MultiHeadedAttention

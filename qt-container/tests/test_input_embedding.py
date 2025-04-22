@@ -13,46 +13,37 @@
 # limitations under the License.
 # ==============================================================================
 
+# qt-container/tests/test_input_embedding.py
+
 import torch
-import sys
-import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
-from layers.input_embedding import InputEmbedding
-from utils.config import get_device
+import pytest
+from qt.layers.input_embedding import InputEmbedding
+from qt.utils.device import get_device  # Ensure this utility exists and is imported properly
 
-
-def test_input_embedding():
-    # Define parameters
+@pytest.fixture
+def setup_input_embedding():
     input_vocab_size = 100
     embed_len = 64
     seq_len = 10
     batch_size = 32
     dropout = 0.1
-    # device = 'cpu'
     device = get_device()
 
-    # Create an instance of InputEmbedding
     model = InputEmbedding(input_vocab_size, embed_len, dropout, device)
+    dummy_input = torch.randint(0, input_vocab_size, (batch_size, seq_len)).to(device)
 
-    # Create a dummy input tensor with random integers in the range of the vocabulary size
-    dummy_input = torch.randint(
-        0, input_vocab_size, (batch_size, seq_len)).to(device)
+    return model, dummy_input, batch_size, seq_len, embed_len
 
-    # Forward pass
+def test_input_embedding_output_shape(setup_input_embedding):
+    model, dummy_input, batch_size, seq_len, embed_len = setup_input_embedding
     output = model(dummy_input)
 
-    # Check the output shape
-    assert output.shape == (
-        batch_size, seq_len, embed_len), f"Expected output shape {(batch_size, seq_len, embed_len)}, but got {output.shape}"
+    assert output.shape == (batch_size, seq_len, embed_len), \
+        f"Expected output shape {(batch_size, seq_len, embed_len)}, but got {output.shape}"
 
-    # Check the output type
-    assert isinstance(
-        output, torch.Tensor), f"Expected output type torch.Tensor, but got {type(output)}"
+def test_input_embedding_output_type(setup_input_embedding):
+    model, dummy_input, _, _, _ = setup_input_embedding
+    output = model(dummy_input)
 
-    print("Test passed!")
-
-    return output.shape
-
-
-if __name__ == '__main__':
-    test_input_embedding()
+    assert isinstance(output, torch.Tensor), \
+        f"Expected output type torch.Tensor, but got {type(output)}"
