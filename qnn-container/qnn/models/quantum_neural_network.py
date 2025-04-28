@@ -22,7 +22,7 @@ import numpy as np
 from qnn.layers.qnn_circuit import QuantumNeuralNetworkCircuit
 
 class QuantumNeuralNetwork(torch.nn.Module):
-    def __init__(self, num_wires=4, cutoff_dim=5, num_layers=2, output_size="single", init_method='normal', active_sd=0.0001, passive_sd=0.1, gain=1.0, normalize_inputs=True, dropout_rate=0.0):
+    def __init__(self, num_wires=4, cutoff_dim=5, num_layers=2, output_size="single", init_method='normal', active_sd=0.0001, passive_sd=0.1, gain=1.0, normalize_inputs=True, dropout_rate=0.0, encoder=None):
         """
         Initializes the quantum neural network model.
 
@@ -39,6 +39,7 @@ class QuantumNeuralNetwork(torch.nn.Module):
         - gain (float): Scaling factor for Xavier/Kaiming initialization. Default is 1.0.
         - normalize_inputs (bool): Whether to normalize inputs to [0, 2π]. Defaults to True.
         - dropout_rate (float): Probability of an element being zeroed in dropout. Default is 0.0 (no dropout).
+         - encoder (object): Custom encoder to use for encoding input data. Defaults to None.
         """
         super(QuantumNeuralNetwork, self).__init__()
         self.num_wires = num_wires
@@ -47,6 +48,7 @@ class QuantumNeuralNetwork(torch.nn.Module):
         self.output_size = output_size.lower()
         self.normalize_inputs = normalize_inputs
         self.dropout_rate = dropout_rate
+        self.encoder = encoder
 
         # Validate output_size
         if self.output_size not in ["single", "multi", "probabilities"]:
@@ -61,7 +63,8 @@ class QuantumNeuralNetwork(torch.nn.Module):
             init_method=init_method,
             active_sd=active_sd,
             passive_sd=passive_sd,
-            gain=gain
+            gain=gain,
+            encoder=self.encoder
         ).build_circuit()
 
         # Build the Torch-compatible quantum layer

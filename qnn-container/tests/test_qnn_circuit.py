@@ -13,12 +13,23 @@
 # limitations under the License.
 # ==============================================================================
 
+# tests/test_qnn_circuit.py
+
 import pytest
 import torch
 import pennylane as qml
 
 from qnn.layers.qnn_circuit import QuantumNeuralNetworkCircuit
-from qnn.utils.quantum_weight_init import QuantumWeightInitializer
+from qnn.layers.qnn_weight_init import QuantumWeightInitializer
+
+# Define a simple mock encoder
+class MockEncoder:
+    def __init__(self, num_wires):
+        self.num_wires = num_wires
+
+    def __call__(self, inputs):
+        # Do nothing for now, just a mock
+        return inputs
 
 @pytest.fixture
 def qnn_params():
@@ -39,7 +50,8 @@ def test_single_output(qnn_params):
         num_wires=qnn_params["num_wires"],
         cutoff_dim=qnn_params["cutoff_dim"],
         num_layers=qnn_params["num_layers"],
-        output_size="single"
+        output_size="single",
+        encoder=MockEncoder  # <-- use MockEncoder
     )
     circuit = qnn_circuit.build_circuit()
     inputs, var = generate_inputs(qnn_params["num_wires"], qnn_params["num_layers"])
@@ -53,7 +65,8 @@ def test_multi_output(qnn_params):
         num_wires=qnn_params["num_wires"],
         cutoff_dim=qnn_params["cutoff_dim"],
         num_layers=qnn_params["num_layers"],
-        output_size="multi"
+        output_size="multi",
+        encoder=MockEncoder
     )
     circuit = qnn_circuit.build_circuit()
     inputs, var = generate_inputs(qnn_params["num_wires"], qnn_params["num_layers"])
@@ -67,7 +80,8 @@ def test_probabilities_output(qnn_params):
         num_wires=qnn_params["num_wires"],
         cutoff_dim=qnn_params["cutoff_dim"],
         num_layers=qnn_params["num_layers"],
-        output_size="probabilities"
+        output_size="probabilities",
+        encoder=MockEncoder
     )
     circuit = qnn_circuit.build_circuit()
     inputs, var = generate_inputs(qnn_params["num_wires"], qnn_params["num_layers"])
@@ -82,5 +96,6 @@ def test_invalid_output_size(qnn_params):
             num_wires=qnn_params["num_wires"],
             cutoff_dim=qnn_params["cutoff_dim"],
             num_layers=qnn_params["num_layers"],
-            output_size="invalid"
+            output_size="invalid",
+            encoder=MockEncoder
         )
