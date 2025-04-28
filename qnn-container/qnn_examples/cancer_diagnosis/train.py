@@ -1,9 +1,11 @@
 import numpy as np
 import torch
-from qnn.models.quantum_neural_network import QuantumNeuralNetwork, get_model
+from qnn.models.quantum_neural_network import QuantumNeuralNetwork
 from data_processing import load_data, preprocess_labels, shuffle_data
 from visualization import plotResults
 from training_utils import train
+from model_builder import get_model
+from normalization import NormalizeToRadians
 
 def main() -> None:
     # Step 1: Load the data using the load_data function
@@ -24,16 +26,28 @@ def main() -> None:
     y_train_padded = preprocess_labels(y_train, num_classes=2, padding_length=10)
     y_val_padded = preprocess_labels(y_val, num_classes=2, padding_length=10)
 
-    # Step 4: Normalize the input data
-    from sklearn.preprocessing import MinMaxScaler
-    scaler = MinMaxScaler()
-    X_train_normalized = scaler.fit_transform(X_train)
-    X_val_normalized = scaler.transform(X_val)
+    # Step 4: Normalize the input data to [0, 2π]
+    from normalization import NormalizeToRadians
+
+    # Initialize the NormalizeToRadians normalizer
+    normalizer = NormalizeToRadians()
+
+    # Convert inputs to PyTorch tensors (if not already)
+    X_train_tensor = torch.tensor(X_train, dtype=torch.float32)
+    X_val_tensor = torch.tensor(X_val, dtype=torch.float32)
+
+    # Normalize the input data
+    X_train_normalized = normalizer(X_train_tensor).numpy()  # Convert back to numpy if needed
+    X_val_normalized = normalizer(X_val_tensor).numpy()      # Convert back to numpy if needed
 
     # Step 5: Initialize the quantum neural network
     num_wires = 10
     num_layers = 2
-    quantum_nn = QuantumNeuralNetwork(num_wires=num_wires, cutoff_dim=2, num_layers=num_layers)
+    quantum_nn = QuantumNeuralNetwork(num_wires=num_wires,
+                                      cutoff_dim=2,
+                                      num_layers=num_layers,
+                                      output_size="multi",
+                                      dropout_rate=0.2)
 
     # Get the PyTorch model
     model = get_model(quantum_nn=quantum_nn, num_wires=num_wires, num_layers=num_layers)
