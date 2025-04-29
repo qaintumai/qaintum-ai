@@ -15,16 +15,8 @@
 
 # Test the Transformer class
 import torch
-import sys
-import os
-
-# Add the src directory to the Python path
-script_dir = os.path.dirname(__file__)
-src_dir = os.path.abspath(os.path.join(script_dir, '..', 'src'))
-if src_dir not in sys.path:
-    sys.path.append(src_dir)
-from models.quantum_transformer import QuantumTransformer
-from layers import qnn_circuit
+from qt.models.quantum_transformer import QuantumTransformer
+from qnn.layers.qnn_circuit import QuantumNeuralNetworkCircuit
 
 def test_transformer():
     # Define parameters
@@ -60,7 +52,7 @@ def test_transformer():
         output, torch.Tensor), f"Expected output type torch.Tensor, but got {type(output)}"
 
     print("Test passed!")
-    
+
     return output.shape
 
 test_transformer()

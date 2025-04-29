@@ -13,22 +13,16 @@
 # limitations under the License.
 # ==============================================================================
 
-# Test the EncoderBlock class
+import pytest
 import torch
-import sys
-import os
+from qt.models import QuantumDecoder
+from qnn.layers.qnn_circuit import QuantumNeuralNetworkCircuit
 
-# Add the src directory to the Python path
-script_dir = os.path.dirname(__file__)
-src_dir = os.path.abspath(os.path.join(script_dir, '..', 'src'))
-if src_dir not in sys.path:
-    sys.path.append(src_dir)
-
-from models import QuantumEncoder
-from layers import qnn_circuit
-
-def test_encoder_block():
-    # Define parameters
+@pytest.fixture
+def decoder_block_setup():
+    """
+    Fixture to set up parameters and create a QuantumDecoder instance.
+    """
     embed_len = 64
     num_heads = 8
     num_layers = 2
@@ -39,27 +33,83 @@ def test_encoder_block():
     dropout = 0.1
     mask = None
 
-    # Create an instance of EncoderBlock
-    model = QuantumEncoder(embed_len, num_heads, num_layers, num_wires, quantum_nn, batch_size, dropout, mask)
+    # Create an instance of QuantumDecoder
+    model = QuantumDecoder(
+        embed_len=embed_len,
+        num_heads=num_heads,
+        num_layers=num_layers,
+        num_wires=num_wires,
+        quantum_nn=quantum_nn,
+        batch_size=batch_size,
+        dropout=dropout,
+        mask=mask,
+    )
 
     # Create dummy input tensors
-    queries = torch.rand(batch_size, seq_len, embed_len)
-    keys = torch.rand(batch_size, seq_len, embed_len)
-    values = torch.rand(batch_size, seq_len, embed_len)
+    target = torch.rand(batch_size, seq_len, embed_len)
+    encoder_output = torch.rand(batch_size, seq_len, embed_len)
+
+    return {
+        "model": model,
+        "target": target,
+        "encoder_output": encoder_output,
+        "batch_size": batch_size,
+        "seq_len": seq_len,
+        "embed_len": embed_len,
+    }
+
+
+def test_decoder_block_output_shape(decoder_block_setup):
+    """
+    Test that the output shape of the QuantumDecoder is as expected.
+    """
+    model = decoder_block_setup["model"]
+    target = decoder_block_setup["target"]
+    encoder_output = decoder_block_setup["encoder_output"]
 
     # Forward pass
-    output = model(queries, keys, values)
+    output = model(target, encoder_output)
 
     # Check the output shape
-    assert output.shape == (
-        batch_size, seq_len, embed_len), f"Expected output shape {(batch_size, seq_len, embed_len)}, but got {output.shape}"
+    expected_shape = (
+        decoder_block_setup["batch_size"],
+        decoder_block_setup["seq_len"],
+        decoder_block_setup["embed_len"],
+    )
+    assert output.shape == expected_shape, f"Expected {expected_shape}, but got {output.shape}"
+
+
+def test_decoder_block_output_type(decoder_block_setup):
+    """
+    Test that the output type of the QuantumDecoder is torch.Tensor.
+    """
+    model = decoder_block_setup["model"]
+    target = decoder_block_setup["target"]
+    encoder_output = decoder_block_setup["encoder_output"]
+
+    # Forward pass
+    output = model(target, encoder_output)
 
     # Check the output type
-    assert isinstance(
-        output, torch.Tensor), f"Expected output type torch.Tensor, but got {type(output)}"
+    assert isinstance(output, torch.Tensor), f"Expected torch.Tensor, but got {type(output)}"
 
-    print("Test passed!")
 
-    return output.shape
+def test_decoder_block_integration(decoder_block_setup):
+    """
+    Integration test to ensure the QuantumDecoder works as a whole.
+    """
+    model = decoder_block_setup["model"]
+    target = decoder_block_setup["target"]
+    encoder_output = decoder_block_setup["encoder_output"]
 
-test_encoder_block()
+    # Forward pass
+    output = model(target, encoder_output)
+
+    # Validate both shape and type
+    expected_shape = (
+        decoder_block_setup["batch_size"],
+        decoder_block_setup["seq_len"],
+        decoder_block_setup["embed_len"],
+    )
+    assert output.shape == expected_shape, f"Expected {expected_shape}, but got {output.shape}"
+    assert isinstance(output, torch.Tensor), f"Expected torch.Tensor, but got {type(output)}"

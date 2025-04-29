@@ -13,23 +13,44 @@
 # limitations under the License.
 # ==============================================================================
 
-# Define the Transformer class
+# qt/models/quantum_transformer.py
+
 import torch.nn as nn
-from qt-container.qt.layers import InputEmbedding
-from qt-container.qt.models import QuantumDecoder
-from qt-container.qt.models import QuantumEncoder
+from qnn.models.qnn_circuit import QuantumNeuralNetworkCircuit
 
 class QuantumTransformer(nn.Module):
-    def __init__(self, num_encoder_layers, num_decoder_layers, embed_len, num_heads, num_layers, num_wires, quantum_nn, batch_size, vocab_size, dropout=0.1, device='cpu'):
+    def __init__(self, num_encoder_layers, num_decoder_layers, embed_len, num_heads, num_layers, num_wires, cutoff_dim, batch_size, vocab_size, output_size="probabilities", dropout=0.1, device='cpu'):
         super(QuantumTransformer, self).__init__()
         self.embed_len = embed_len
         self.device = device
+
+        # Initialize the quantum neural network (QNN)
+        self.quantum_nn = QuantumNeuralNetworkCircuit(
+            num_wires=num_wires,
+            cutoff_dim=cutoff_dim,
+            num_layers=num_layers,
+            output_size=output_size
+        )
+
+        # Input embedding layer
         self.embedding = InputEmbedding(
             vocab_size, embed_len, dropout, device).to(device)
-        self.encoder_layers = nn.ModuleList([QuantumEncoder(
-            embed_len, num_heads, num_layers, num_wires, quantum_nn, dropout).to(device) for _ in range(num_encoder_layers)])
-        self.decoder_layers = nn.ModuleList([QuantumDecoder(
-            embed_len, num_heads, num_layers, num_wires, quantum_nn, dropout).to(device) for _ in range(num_decoder_layers)])
+
+        # Encoder layers
+        self.encoder_layers = nn.ModuleList([
+            QuantumEncoder(
+                embed_len, num_heads, num_layers, num_wires, self.quantum_nn, dropout
+            ).to(device) for _ in range(num_encoder_layers)
+        ])
+
+        # Decoder layers
+        self.decoder_layers = nn.ModuleList([
+            QuantumDecoder(
+                embed_len, num_heads, num_layers, num_wires, self.quantum_nn, dropout
+            ).to(device) for _ in range(num_decoder_layers)
+        ])
+
+        # Output linear layer
         self.output_linear = nn.Linear(embed_len, vocab_size).to(device)
 
     def forward(self, src, tgt):
@@ -39,8 +60,7 @@ class QuantumTransformer(nn.Module):
         # Encoder forward pass
         encoder_output = src_embedded
         for layer in self.encoder_layers:
-            encoder_output = layer(
-                encoder_output, encoder_output, encoder_output)
+            encoder_output = layer(encoder_output, encoder_output, encoder_output)
 
         # Decoder forward pass
         decoder_output = tgt_embedded

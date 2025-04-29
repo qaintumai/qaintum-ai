@@ -15,17 +15,8 @@
 
 # Test the DecoderBlock class
 import torch
-import sys
-import os
-
-# Add the src directory to the Python path
-script_dir = os.path.dirname(__file__)
-src_dir = os.path.abspath(os.path.join(script_dir, '..', 'src'))
-if src_dir not in sys.path:
-    sys.path.append(src_dir)
-
-from models import QuantumDecoder
-from layers import qnn_circuit
+from qt.models import QuantumDecoder
+from qnn.layers.qnn_circuit import QuantumNeuralNetworkCircuit
 
 def test_decoder_block():
     # Define parameters
@@ -38,6 +29,14 @@ def test_decoder_block():
     batch_size = 32
     dropout = 0.1
     mask = None
+
+    # Create a quantum circuit
+    quantum_nn = QuantumNeuralNetworkCircuit(
+        num_wires=num_wires,
+        cutoff_dim=cutoff_dim,
+        num_layers=num_layers,
+        output_size="probabilities",
+    )
 
     # Create an instance of DecoderBlock
     model = QuantumDecoder(embed_len, num_heads, num_layers, num_wires, quantum_nn, batch_size, dropout, mask)

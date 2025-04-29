@@ -13,7 +13,10 @@
 # limitations under the License.
 # ==============================================================================
 
+# qt/models/quantum_feed_forward.py
+
 from torch import nn
+from qnn.layers.qnn_circuit import QuantumNeuralNetworkCircuit
 
 class QuantumFeedForward(nn.Module):
     """
@@ -24,26 +27,38 @@ class QuantumFeedForward(nn.Module):
     from layers.quantum_feed_forward import QuantumFeedForward
 
     Example:
-    model = QuantumFeedForward(embed_len=64)
+    model = QuantumFeedForward(num_layers=2, num_wires=4, cutoff_dim=10, embed_len=64)
     output = model(input_tensor)
     """
 
-    def __init__(self, num_layers, num_wires, quantum_nn, embed_len, dropout=0.1):
+    def __init__(self, num_layers, num_wires, cutoff_dim, embed_len, dropout=0.1, output_size="probabilities"):
         """
         Initializes the QuantumFeedForward class with the given parameters.
 
         Parameters:
+        - num_layers (int): Number of layers in the quantum neural network.
+        - num_wires (int): Number of wires (qubits/qumodes) in the quantum circuit.
+        - cutoff_dim (int): Cutoff dimension for the Fock space representation.
         - embed_len (int): Length of the embedding vector.
         - dropout (float, optional): Dropout rate for regularization. Default is 0.1.
+        - output_size (str, optional): Output type of the quantum circuit ("single", "multi", or "probabilities").
         """
         super(QuantumFeedForward, self).__init__()
         self.num_layers = num_layers
         self.num_wires = num_wires
-        self.quantum_nn = quantum_nn
-        #TODO: circular imports, refactor
-        #from models.quantum_neural_network import QuantumNeuralNetwork
-        self.qnn_model = QuantumNeuralNetwork(self.num_layers, self.num_wires, self.quantum_nn).qlayers
-        self.quantum_feed_forward = nn.Sequential(self.qnn_model)
+        self.cutoff_dim = cutoff_dim
+        self.embed_len = embed_len
+
+        # Initialize the quantum neural network (QNN)
+        self.quantum_nn = QuantumNeuralNetworkCircuit(
+            num_wires=num_wires,
+            cutoff_dim=cutoff_dim,
+            num_layers=num_layers,
+            output_size=output_size
+        )
+
+        # Define the quantum feedforward layers
+        self.qnn_model = self.quantum_nn.build_circuit()
         self.dropout_layer = nn.Dropout(p=dropout)
         self.layer_norm = nn.LayerNorm(embed_len)
 
@@ -57,7 +72,13 @@ class QuantumFeedForward(nn.Module):
         Returns:
         - torch.Tensor: Output tensor after applying feedforward, dropout, and layer normalization.
         """
-        ff_output = self.quantum_feed_forward(x)
+        # Ensure the input tensor matches the number of wires
+        if x.shape[-1] != self.num_wires:
+            raise ValueError(f"Input tensor must have {self.num_wires} features to match the number of wires.")
+
+        # Apply the quantum circuit
+        ff_output = self.qnn_model(x)
+
+        # Apply dropout and layer normalization
         ff_output = self.dropout_layer(ff_output)
         return self.layer_norm(ff_output + x)
-

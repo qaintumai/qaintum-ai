@@ -14,12 +14,7 @@
 # ==============================================================================
 
 import torch
-import time
-import sys
-import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
-from layers.scaled_dot_product import ScaledDotProduct
-
+from qt.layers.scaled_dot_product import ScaledDotProduct
 
 def test_scaled_dot_product():
     # Define parameters
