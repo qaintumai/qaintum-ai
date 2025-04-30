@@ -10,10 +10,11 @@
    - [qnn_circuit.py](#qnn_circuitpy)
    - [qnn_layer.py](#qnn_layerpy)
    - [qnn_data_encoder.py](#qnn_data_encoderpy)
-   - [qnn_weight_init.py](#qnn_weight_initpy)
 4. [Models API](#models-api)
    - [quantum_neural_network.py](#quantum_neural_networkpy)
 5. [Utils API](#utils-api)
+   - [normalization.py](#normalizationpy)
+   - [qnn_weight_init.py](#qnn_weight_initpy)
 
 ---
 
@@ -37,19 +38,23 @@ The Layers module contains core components for building quantum neural networks 
   - `"single_output"`: Returns a scalar value via expectation measurement on the first wire.
   - `"multi"`: Returns a vector with measurements from all wires.
   - `"probabilities"`: Returns a probability distribution over all basis states.
-- **QNN Weight Initializer**: Initializes weights for quantum layers based on optical quantum gate principles.
 
-**Initialization Methods:**
-
-- `normal`: Gaussian distribution with mean 0 and user-defined standard deviations.
-- `uniform`: Uniform distribution over a defined range.
-- `xavier`: Scales variance by average number of input/output units. Suited for symmetric activations (e.g., `tanh`).
-- `kaiming`: Scales variance based on the number of input units. Ideal for ReLU-like activations.
 
 ### **Models**
 
 Implements the full quantum neural network model, which wraps the circuit, training, and prediction logic.
 
+### **Utils**
+- **QNN Weight Initializer**: Initializes weights for quantum layers based on optical quantum gate principles.
+
+  **Initialization Methods:**
+
+  - `normal`: Gaussian distribution with mean 0 and user-defined standard deviations.
+  - `uniform`: Uniform distribution over a defined range.
+  - `xavier`: Scales variance by average number of input/output units. Suited for symmetric activations (e.g., `tanh`).
+  - `kaiming`: Scales variance based on the number of input units. Ideal for ReLU-like activations.
+
+- **Normalization**: Normalizes input data for quantum data encoding.
 ---
 
 ## **Layers API**
@@ -105,30 +110,6 @@ Represents a quantum layer using various quantum gates.
 
 ---
 
-### `qnn_weight_init.py`
-
-#### `class QuantumWeightInitializer`
-
-**Description:**
-Initializes weights for QNN layers based on a selected strategy.
-
-**Methods:**
-
-- `__init__(self, method='normal', active_sd=0.0001, passive_sd=0.1, gain=1.0)`
-  Sets up the initializer with a method and distribution parameters.
-
-- `init_weights(self, layers, num_wires)`
-  Generates weight arrays based on method, number of layers, and wires.
-
-**Supported Initialization Methods:**
-
-- **`normal`**: Uses Gaussian distribution centered at 0 with user-defined standard deviation (`active_sd`, `passive_sd`).
-- **`uniform`**: Uses a flat distribution over a defined range, useful for non-biased initial states.
-- **`xavier`**: Maintains activation variance; best for symmetric activations like `tanh`.
-- **`kaiming`**: Preserves forward signal variance in deeper networks; optimized for ReLU-like nonlinearities.
-
----
-
 ## **Models API**
 
 ### `quantum_neural_network.py`
@@ -136,7 +117,7 @@ Initializes weights for QNN layers based on a selected strategy.
 #### `class QuantumNeuralNetwork`
 
 **Description:**
-This class integrates the data encoder, QNN layers, and circuit into a trainable PyTorch model. It encapsulates initialization, circuit building, and forward-pass computation.
+Encapsulates the entire QNN pipeline — from encoding and circuit construction to training and inference — into a PyTorch-compatible model.
 
 ---
 
@@ -163,10 +144,59 @@ This class integrates the data encoder, QNN layers, and circuit into a trainable
 - `forward(self, inputs)`
   Performs a forward pass through the quantum model, returning predictions based on the selected output mode.
 
+```sh
+model = QuantumNeuralNetwork(num_wires=4, cutoff_dim=5, num_layers=2, output_size='multi', dropout_rate=0.2)
+output = model(input_data)
+```
 ---
 
 ## **Utils API**
 
-Additional utilities that support core quantum components (to be expanded as needed).
+### `normalization.py`
+
+**Description:**
+Normalizes input data for quantum data encoding gates.
+
+#### `class ZScoreNormalization`
+    **Description:**
+    Normalizes input data using Z-score normalization (standardization).
+    Formula: z = (x - mean) / std
+
+#### `class MinMaxScaling`
+    **Description:**
+    Normalizes input data using min-max scaling to a specified range [min_value, max_value].
+    Formula: x_scaled = (x - x_min) / (x_max - x_min) * (max_value - min_value) + min_value
+
+#### `class NormalizeToRange`
+    **Description:**
+    Normalizes input data to a specific range [target_min, target_max].
+    Formula: x_normalized = (x - x_min) / (x_max - x_min) * (target_max - target_min) + target_min
+
+#### `class NormalizeToRadians`
+    **Description:**
+    Normalizes input data to the range [0, 2π], suitable for quantum circuits or periodic functions.
+    Formula: x_normalized = (x - x_min) / (x_max - x_min) * 2π
+
+### `qnn_weight_init.py`
+
+#### `class QuantumWeightInitializer`
+
+**Description:**
+Initializes weights for QNN layers based on a selected strategy.
+
+**Methods:**
+
+- `__init__(self, method='normal', active_sd=0.0001, passive_sd=0.1, gain=1.0)`
+  Sets up the initializer with a method and distribution parameters.
+
+- `init_weights(self, layers, num_wires)`
+  Generates weight arrays based on method, number of layers, and wires.
+
+**Supported Initialization Methods:**
+
+- **`normal`**: Uses Gaussian distribution centered at 0 with user-defined standard deviation (`active_sd`, `passive_sd`).
+- **`uniform`**: Uses a flat distribution over a defined range, useful for non-biased initial states.
+- **`xavier`**: Maintains activation variance; best for symmetric activations like `tanh`.
+- **`kaiming`**: Preserves forward signal variance in deeper networks; optimized for ReLU-like nonlinearities.
 
 ---
