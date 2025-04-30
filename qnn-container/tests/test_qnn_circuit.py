@@ -17,19 +17,12 @@
 
 import pytest
 import torch
+import numpy as np
 import pennylane as qml
 
+from qnn.layers.qnn_data_encoder import QuantumDataEncoder  # Import QuantumDataEncoder
 from qnn.layers.qnn_circuit import QuantumNeuralNetworkCircuit
-from qnn.layers.qnn_weight_init import QuantumWeightInitializer
-
-# Define a simple mock encoder
-class MockEncoder:
-    def __init__(self, num_wires):
-        self.num_wires = num_wires
-
-    def __call__(self, inputs):
-        # Do nothing for now, just a mock
-        return inputs
+from qnn.utils.qnn_weight_init import QuantumWeightInitializer
 
 @pytest.fixture
 def qnn_params():
@@ -39,54 +32,100 @@ def qnn_params():
         "num_layers": 2
     }
 
-def generate_inputs(num_wires, num_layers):
-    inputs = torch.randn(8 * num_wires - 2).tolist()
-    weights = QuantumWeightInitializer()
-    var = weights.init_weights(num_layers, num_wires)
+
+def generate_inputs_and_weights(qnn_params):
+    """
+    Helper function to generate random inputs and weights for testing.
+
+    Parameters:
+        qnn_params (dict): Dictionary containing QNN parameters.
+
+    Returns:
+        tuple: Inputs (list) and weights (torch.Tensor).
+    """
+    inputs = np.random.randn(2 * qnn_params["num_wires"]).tolist()
+    weight_initializer = QuantumWeightInitializer()
+    var = weight_initializer.init_weights(qnn_params["num_layers"], qnn_params["num_wires"])
     return inputs, var
 
 def test_single_output(qnn_params):
+    # Generate inputs
+    inputs, var = generate_inputs_and_weights(qnn_params)
+
+    # Initialize QuantumNeuralNetworkCircuit
     qnn_circuit = QuantumNeuralNetworkCircuit(
         num_wires=qnn_params["num_wires"],
         cutoff_dim=qnn_params["cutoff_dim"],
         num_layers=qnn_params["num_layers"],
         output_size="single",
-        encoder=MockEncoder  # <-- use MockEncoder
     )
     circuit = qnn_circuit.build_circuit()
-    inputs, var = generate_inputs(qnn_params["num_wires"], qnn_params["num_layers"])
+
+    # Pass encoded inputs to the circuit
     output = circuit(inputs, var)
 
     assert isinstance(output, torch.Tensor)
     assert output.dim() == 0  # Scalar tensor
 
 def test_multi_output(qnn_params):
+     # Generate inputs and weights
+    inputs, var = generate_inputs_and_weights(qnn_params)
+
+    # Initialize QuantumNeuralNetworkCircuit
     qnn_circuit = QuantumNeuralNetworkCircuit(
         num_wires=qnn_params["num_wires"],
         cutoff_dim=qnn_params["cutoff_dim"],
         num_layers=qnn_params["num_layers"],
         output_size="multi",
-        encoder=MockEncoder
     )
     circuit = qnn_circuit.build_circuit()
-    inputs, var = generate_inputs(qnn_params["num_wires"], qnn_params["num_layers"])
+
+    # Pass encoded inputs to the circuit
+    output = circuit(inputs, var)
+
+    assert isinstance(output, torch.Tensor)
+    assert output.dim() == 0  # Scalar tensor
+
+def test_multi_output(qnn_params):
+    # Generate inputs and weights
+    inputs, var = generate_inputs_and_weights(qnn_params)
+
+    # Initialize QuantumNeuralNetworkCircuit
+    qnn_circuit = QuantumNeuralNetworkCircuit(
+        num_wires=qnn_params["num_wires"],
+        cutoff_dim=qnn_params["cutoff_dim"],
+        num_layers=qnn_params["num_layers"],
+        output_size="multi",
+    )
+    circuit = qnn_circuit.build_circuit()
+
+    # Pass encoded inputs to the circuit
     output = circuit(inputs, var)
 
     assert isinstance(output, torch.Tensor)
     assert len(output) == qnn_params["num_wires"]
 
 def test_probabilities_output(qnn_params):
+    # Generate inputs
+    inputs = np.random.randn(2*qnn_params["num_wires"]).tolist()
+
+    # Generate weights
+    weights = QuantumWeightInitializer()
+    var = weights.init_weights(qnn_params["num_layers"], qnn_params["num_wires"])
+
+    # Initialize QuantumNeuralNetworkCircuit
     qnn_circuit = QuantumNeuralNetworkCircuit(
         num_wires=qnn_params["num_wires"],
         cutoff_dim=qnn_params["cutoff_dim"],
         num_layers=qnn_params["num_layers"],
         output_size="probabilities",
-        encoder=MockEncoder
     )
     circuit = qnn_circuit.build_circuit()
-    inputs, var = generate_inputs(qnn_params["num_wires"], qnn_params["num_layers"])
+
+    # Pass encoded inputs to the circuit
     output = circuit(inputs, var)
 
+    assert isinstance(output, torch.Tensor)
     expected_len = qnn_params["cutoff_dim"] ** qnn_params["num_wires"]
     assert len(output) == expected_len
 
@@ -97,5 +136,7 @@ def test_invalid_output_size(qnn_params):
             cutoff_dim=qnn_params["cutoff_dim"],
             num_layers=qnn_params["num_layers"],
             output_size="invalid",
-            encoder=MockEncoder
+            encoder=QuantumDataEncoder(num_wires=qnn_params["num_wires"])
         )
+
+

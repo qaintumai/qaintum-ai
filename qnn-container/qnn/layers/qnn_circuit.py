@@ -15,8 +15,11 @@
 
 # qnn/layers/qnn_circuit.py
 
+import torch
 import pennylane as qml
-from qnn.layers.qnn_weight_init import QuantumWeightInitializer
+from qnn.layers.qnn_data_encoder import QuantumDataEncoder
+from qnn.layers.qnn_layer import QuantumNeuralNetworkLayer
+from qnn.utils.qnn_weight_init import QuantumWeightInitializer
 
 class QuantumNeuralNetworkCircuit:
     def __init__(self, num_wires, cutoff_dim, num_layers, output_size="single", init_method='normal', active_sd=0.0001, passive_sd=0.1, gain=1.0, encoder=None):
@@ -38,7 +41,7 @@ class QuantumNeuralNetworkCircuit:
         self.cutoff_dim = cutoff_dim
         self.num_layers = num_layers
         self.output_size = output_size.lower()
-        self.encoder = encoder
+        self.encoder = encoder or QuantumDataEncoder(self.num_wires)
 
         # Validate output_size
         if self.output_size not in ["single", "multi", "probabilities"]:
@@ -46,7 +49,7 @@ class QuantumNeuralNetworkCircuit:
 
         # Initialize the quantum device
         try:
-            self.dev = qml.device("default.qubit", wires=self.num_wires)
+            self.dev = qml.device("strawberryfields.fock", wires=self.num_wires, cutoff_dim=self.cutoff_dim)
         except Exception as e:
             raise RuntimeError(f"Failed to initialize the quantum device: {e}")
 
@@ -66,13 +69,12 @@ class QuantumNeuralNetworkCircuit:
             if isinstance(inputs, torch.Tensor):
                 inputs = inputs.tolist()
 
+            if not all(isinstance(val, (int, float)) for val in inputs):
+                raise TypeError("All elements of the input data must be numeric.")
+
             # Encode input data using the custom encoder
             if self.encoder is not None:
                 self.encoder.encode(inputs)
-            else:
-                # Default encoding (if no custom encoder is provided)
-                for i in range(self.num_wires):
-                    qml.RX(inputs[i], wires=i)
 
             # Apply quantum layers
             q_layer = QuantumNeuralNetworkLayer(self.num_wires)
@@ -81,9 +83,9 @@ class QuantumNeuralNetworkCircuit:
 
             # Return outputs based on output_size
             if self.output_size == "single":
-                return qml.expval(qml.PauliZ(0))
+                return qml.expval(qml.X(0))
             elif self.output_size == "multi":
-                return [qml.expval(qml.PauliZ(wire)) for wire in range(self.num_wires)]
+                return [qml.expval(qml.X(wire)) for wire in range(self.num_wires)]
             elif self.output_size == "probabilities":
                 wires = list(range(self.num_wires))
                 return qml.probs(wires=wires)

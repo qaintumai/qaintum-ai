@@ -1,4 +1,4 @@
-# Copyright 2025 The qAIntum.ai Authors. All Rights Reserved.
+# Copyright 2024 The qAIntum.ai Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
+
+# tests/test_quantum_neural_network.py
 
 import pytest
 import torch

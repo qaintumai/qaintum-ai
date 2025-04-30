@@ -1,3 +1,20 @@
+# Copyright 2025 The qAIntum.ai Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ==============================================================================
+
+# qnn/utils/normalization.py
+
 import torch
 import torch.nn as nn
 
@@ -13,7 +30,13 @@ class ZScoreNormalization(nn.Module):
         - x: Input tensor of shape (batch_size, num_features)
         Returns:
         - Normalized tensor of the same shape
+        Raises:
+        - ValueError: If the input tensor is empty.
         """
+        # Validate that the input tensor is not empty
+        if x.numel() == 0:
+            raise ValueError("Input tensor cannot be empty.")
+
         mean = x.mean(dim=1, keepdim=True)  # Compute mean along the feature dimension
         std = x.std(dim=1, keepdim=True)    # Compute standard deviation along the feature dimension
         x_standardized = (x - mean) / (std + 1e-8)  # Add small value to prevent division by zero
@@ -43,7 +66,13 @@ class MinMaxScaling(nn.Module):
         - x: Input tensor of shape (batch_size, num_features)
         Returns:
         - Scaled tensor of the same shape
+        Raises:
+        - ValueError: If the input tensor is empty.
         """
+        # Validate that the input tensor is not empty
+        if x.numel() == 0:
+            raise ValueError("Input tensor cannot be empty.")
+
         x_min = x.min(dim=1, keepdim=True)[0]  # Compute minimum along the feature dimension
         x_max = x.max(dim=1, keepdim=True)[0]  # Compute maximum along the feature dimension
         x_scaled = (x - x_min) / (x_max - x_min + 1e-8)  # Add small value to prevent division by zero
@@ -74,7 +103,13 @@ class NormalizeToRange(nn.Module):
         - x: Input tensor of shape (batch_size, num_features)
         Returns:
         - Normalized tensor of the same shape
+        Raises:
+        - ValueError: If the input tensor is empty.
         """
+        # Validate that the input tensor is not empty
+        if x.numel() == 0:
+            raise ValueError("Input tensor cannot be empty.")
+
         x_min = x.min(dim=1, keepdim=True)[0]  # Compute minimum along the feature dimension
         x_max = x.max(dim=1, keepdim=True)[0]  # Compute maximum along the feature dimension
         x_normalized = (x - x_min) / (x_max - x_min + 1e-8)  # Add small value to prevent division by zero
@@ -94,7 +129,13 @@ class NormalizeToRadians(nn.Module):
         - x: Input tensor of shape (batch_size, num_features)
         Returns:
         - Normalized tensor in the range [0, 2π]
+        Raises:
+        - ValueError: If the input tensor is empty.
         """
+        # Validate that the input tensor is not empty
+        if x.numel() == 0:
+            raise ValueError("Input tensor cannot be empty.")
+
         x_min = x.min(dim=1, keepdim=True)[0]  # Compute minimum along the feature dimension
         x_max = x.max(dim=1, keepdim=True)[0]  # Compute maximum along the feature dimension
         x_normalized = (x - x_min) / (x_max - x_min + 1e-8)  # Add small value to prevent division by zero

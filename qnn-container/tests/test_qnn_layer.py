@@ -13,6 +13,8 @@
 # limitations under the License.
 # ==============================================================================
 
+# tests/test_qnn_layer.py
+
 import pytest
 import pennylane as qml
 import torch

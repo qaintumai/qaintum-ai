@@ -1,3 +1,20 @@
+# Copyright 2025 The qAIntum.ai Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ==============================================================================
+
+# qnn_examples/cancer_diagnosis/train.py
+
 import numpy as np
 import torch
 from qnn.models.quantum_neural_network import QuantumNeuralNetwork
@@ -5,7 +22,7 @@ from data_processing import load_data, preprocess_labels, shuffle_data
 from visualization import plotResults
 from training_utils import train
 from model_builder import get_model
-from normalization import NormalizeToRadians
+from qnn.utils.normalization import NormalizeToRadians
 
 def main() -> None:
     # Step 1: Load the data using the load_data function
@@ -27,7 +44,7 @@ def main() -> None:
     y_val_padded = preprocess_labels(y_val, num_classes=2, padding_length=10)
 
     # Step 4: Normalize the input data to [0, 2π]
-    from normalization import NormalizeToRadians
+    from qnn.utils.normalization import NormalizeToRadians
 
     # Initialize the NormalizeToRadians normalizer
     normalizer = NormalizeToRadians()

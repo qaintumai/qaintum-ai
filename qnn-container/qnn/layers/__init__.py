@@ -25,17 +25,13 @@ These components are essential for encoding input data and defining trainable qu
 Usage:
     from qnn.layers import *
 """
-
-
 from .qnn_data_encoder import QuantumDataEncoder
 from .qnn_layer import QuantumNeuralNetworkLayer
 from .qnn_circuit import QuantumNeuralNetworkCircuit
-from .qnn_weight_init import QuantumWeightInitializer
 
 __all__ = [
     "QuantumDataEncoder",
     "QuantumNeuralNetworkLayer",
     "QuantumNeuralNetworkCircuit",
-    "QuantumWeightInitializer"
 ]
 

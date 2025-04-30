@@ -13,23 +13,25 @@
 # limitations under the License.
 # ==============================================================================
 
-# qnn_examples/bio_oil_production/custom_encoder.py
+# Expose key components from the utils submodules
 
-import pennylane as qml
+# Weight initialization utilities
+from .qnn_weight_init import QuantumWeightInitializer
 
-class CustomFeatureEncoder:
-    """Encodes input features into quantum states."""
-    def __init__(self, num_wires):
-        self.num_wires = num_wires
+# Normalization utilities
+from .normalization import (
+    ZScoreNormalization,
+    MinMaxScaling,
+    NormalizeToRange,
+    NormalizeToRadians,
+)
 
-    def encode(self, x):
-        for i in range(self.num_wires):
-            if i < 5:
-                qml.Rotation(x[i], wires=i)
-            elif i == 5:
-                qml.Squeezing(x[i], 0, wires=i)
-            elif i == 6:
-                qml.Displacement(x[i], 0, wires=i)
-            elif i == 7:
-                qml.Kerr(x[i], wires=i)
+# Define __all__ to specify what is exported when `from qnn.utils import *` is used
+__all__ = [
+    "QuantumWeightInitializer",
+    "ZScoreNormalization",
+    "MinMaxScaling",
+    "NormalizeToRange",
+    "NormalizeToRadians",
+]
 
