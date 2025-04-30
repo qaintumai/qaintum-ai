@@ -46,6 +46,7 @@ class QuantumNeuralNetwork(torch.nn.Module):
         self.cutoff_dim = cutoff_dim
         self.num_layers = num_layers
         self.output_size = output_size.lower()
+        self.init_method = init_method
         self.normalize_inputs = normalize_inputs
         self.dropout_rate = dropout_rate
         self.encoder = encoder

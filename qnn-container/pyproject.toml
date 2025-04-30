@@ -3,14 +3,14 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "qnn"
-version = "0.1.0"
+name = "qaintum-qnn"
+version = "0.1.1dev1"
 description = "Quantum Neural Networks (QNN) framework for quantum-enhanced machine learning."
 authors = [
     {name = "Sophie Choe", email = "sophie.choe@qaintum.ai"},
-    {name = "Alex Olivas", email = ""},
-    {name = "Max Ivry", email = ""},
-    {name = "B R Nikilesh", email = ""},
+    {name = "Alex Olivas", email = "alex.r.olivas@gmail.com"},
+    {name = "Max Ivry", email = "maxssivry@gmail.com"},
+    {name = "B R Nikilesh", email = "brnikilesh7@gmail.com"},
 ]
 readme = "README.md"
 license = {text = "MIT"}
@@ -32,7 +32,8 @@ dev = [
     "black",
     "flake8",
     "mypy",
-    "pre-commit"
+    "pre-commit",
+    "pytest-cov",  # Add pytest-cov for coverage reporting
 ]
 
 [tool.setuptools]
@@ -49,6 +50,8 @@ exclude = [".git", "__pycache__", "build", "dist"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
+addopts = "--cov=qnn --cov-report=term-missing"  # Enable coverage reporting
+testpaths = ["tests"]  # Specify the directory containing tests
 filterwarnings = [
     "ignore::DeprecationWarning",  # Suppress all DeprecationWarnings
 ]

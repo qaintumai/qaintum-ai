@@ -1,13 +1,13 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="qnn",
-    version="0.1.0",
+    name="qaintum-qnn",
+    version="0.1.1dev1",
     author="qAIntum.ai",
     description="A Quantum Neural Network package for classification and regression tasks.",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/qaintum-ai/qnn-container",
+    url="https://github.com/qaintumai/qaintum-ai/qnn-container",
     packages=find_packages(),
     install_requires=[
         "torch==2.2.2",
