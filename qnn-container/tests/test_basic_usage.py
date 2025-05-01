@@ -17,7 +17,7 @@
 
 import torch
 import pytest
-from qnn.models.quantum_neural_network import QuantumNeuralNetwork
+from qaintum_qnn.models.quantum_neural_network import QuantumNeuralNetwork
 
 def test_basic_usage_forward_pass():
     num_wires = 4

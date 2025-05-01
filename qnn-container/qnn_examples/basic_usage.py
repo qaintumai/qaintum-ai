@@ -1,7 +1,7 @@
 # qnn_examples/basic_usage.py
 
 import torch
-from qnn.models.quantum_neural_network import QuantumNeuralNetwork
+from qaintum_qnn.models.quantum_neural_network import QuantumNeuralNetwork
 
 def main():
     # Initialize the quantum neural network

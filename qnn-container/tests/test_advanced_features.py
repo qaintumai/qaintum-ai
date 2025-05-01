@@ -17,8 +17,8 @@
 
 import torch
 import pytest
-from qnn.models.quantum_neural_network import QuantumNeuralNetwork
-from qnn.utils.normalization import ZScoreNormalization, MinMaxScaling, NormalizeToRange, NormalizeToRadians
+from qaintum_qnn.models.quantum_neural_network import QuantumNeuralNetwork
+from qaintum_qnn.utils.normalization import ZScoreNormalization, MinMaxScaling, NormalizeToRange, NormalizeToRadians
 
 # Fixtures for reusable components
 @pytest.fixture

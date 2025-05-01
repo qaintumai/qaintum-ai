@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "qaintum_qnn"
-version = "0.1.1.dev1"
+version = "0.1.1"
 description = "Quantum Neural Networks (QNN) framework for quantum-enhanced machine learning."
 authors = [
     {name = "Sophie Choe", email = "sophie.choe@qaintum.ai"},

@@ -20,7 +20,7 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from .custom_encoder import CustomFeatureEncoder
-from qnn.models.quantum_neural_network import QuantumNeuralNetwork
+from qaintum_qnn.models.quantum_neural_network import QuantumNeuralNetwork
 
 # Original Google Drive shareable link
 url = "https://drive.google.com/uc?id=10dUF-cSRUfE5SzMuCSjiVwvW8FytBpHl"

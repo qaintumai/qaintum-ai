@@ -13,7 +13,7 @@
 # limitations under the License.
 # ==============================================================================
 
-# qnn/utils/normalization.py
+# qaintum_qnn/utils/normalization.py
 
 import torch
 import torch.nn as nn

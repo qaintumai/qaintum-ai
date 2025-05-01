@@ -13,13 +13,13 @@
 # limitations under the License.
 # ==============================================================================
 
-# qnn/models/quantum_neural_network.py
+# qaintum_qnn/models/quantum_neural_network.py
 
 import pennylane as qml
 import torch
 import numpy as np
 
-from qnn.layers.qnn_circuit import QuantumNeuralNetworkCircuit
+from qaintum_qnn.layers.qnn_circuit import QuantumNeuralNetworkCircuit
 
 class QuantumNeuralNetwork(torch.nn.Module):
     def __init__(self, num_wires=4, cutoff_dim=5, num_layers=2, output_size="single", init_method='normal', active_sd=0.0001, passive_sd=0.1, gain=1.0, normalize_inputs=True, dropout_rate=0.0, encoder=None):

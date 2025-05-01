@@ -13,7 +13,7 @@
 # limitations under the License.
 # ==============================================================================
 
-# qnn/layers/qnn_layer.py
+# qaintum_qnn/layers/qnn_layer.py
 
 import pennylane as qml
 

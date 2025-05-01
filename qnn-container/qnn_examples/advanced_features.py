@@ -17,8 +17,8 @@
 
 import torch
 import torch.nn as nn
-from qnn.models.quantum_neural_network import QuantumNeuralNetwork
-from qnn.utils.normalization import ZScoreNormalization, MinMaxScaling, NormalizeToRange, NormalizeToRadians
+from qaintum_qnn.models.quantum_neural_network import QuantumNeuralNetwork
+from qaintum_qnn.utils.normalization import ZScoreNormalization, MinMaxScaling, NormalizeToRange, NormalizeToRadians
 
 def main():
     print("Demonstrating Advanced Features of the Quantum Neural Network (QNN)")

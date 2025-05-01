@@ -29,6 +29,7 @@ To import specific components:
     from qnn import QuantumNeuralNetwork, ZScoreNormalization, MinMaxScaling
 
 """
+__version__ = "0.1.1"
 
 # Import core components from submodules
 from .models import QuantumNeuralNetwork

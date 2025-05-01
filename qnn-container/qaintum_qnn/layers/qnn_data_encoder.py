@@ -13,7 +13,7 @@
 # limitations under the License.
 # ==============================================================================
 
-# qnn/layers/qnn_data_encoder.py
+# qaintum_qnn/layers/qnn_data_encoder.py
 
 import pennylane as qml
 from itertools import zip_longest
