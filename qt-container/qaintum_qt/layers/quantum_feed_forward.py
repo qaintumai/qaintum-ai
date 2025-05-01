@@ -13,10 +13,10 @@
 # limitations under the License.
 # ==============================================================================
 
-# qt/models/quantum_feed_forward.py
+# qaintum_qt/models/quantum_feed_forward.py
 
 from torch import nn
-from qnn.layers.qnn_circuit import QuantumNeuralNetworkCircuit
+from qaintum_qnn.models.quantum_neural_network import QuantumNeuralNetwork
 
 class QuantumFeedForward(nn.Module):
     """

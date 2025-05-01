@@ -1,10 +1,10 @@
-qnn @ git+https://github.com/quantum/qaintum-ai/qnn-container.git#egg=qnn
-matplotlib
+qaintum-qnn>=0.1.0
 numpy==1.23.5
 pandas==2.2.2
+matplotlib
 PennyLane==0.29.1
 PennyLane-SF==0.29.1
-scikit_learn
+scikit-learn
 scipy==1.10.1
 setuptools==65.5.0
 torch==2.2.2

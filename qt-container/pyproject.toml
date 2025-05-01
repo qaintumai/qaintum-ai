@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "qt"
+name = "qaintum_qt"
 version = "0.1.0"
 description = "Quantum Transformer (QT) framework for quantum-enhanced sequence learning."
 authors = [
@@ -12,16 +12,19 @@ authors = [
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.8"
+
 dependencies = [
-    "qnn>=0.1.0",
-    "torch==2.2.2",
-    "torchvision==0.17.2",
+    "qaintum-qnn>=0.1.0",
+    "numpy==1.23.5",
+    "pandas==2.2.2",
+    "matplotlib",
     "PennyLane==0.29.1",
     "PennyLane-SF==0.29.1",
-    "numpy==1.23.5",
+    "scikit-learn",
     "scipy==1.10.1",
-    "sympy>=1.10",
-    "setuptools==65.5.0"
+    "setuptools==65.5.0",
+    "torch==2.2.2",
+    "torchvision==0.17.2"
 ]
 
 [project.optional-dependencies]
@@ -34,7 +37,7 @@ dev = [
 ]
 
 [tool.setuptools]
-packages = ["qt"]
+packages = ["qaintum_qt"]
 
 [tool.black]
 line-length = 88

@@ -1,4 +1,4 @@
-# Copyright 2024 The qAIntum.ai Authors. All Rights Reserved.
+# Copyright 2025 The qAIntum.ai Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,51 +13,56 @@
 # limitations under the License.
 # ==============================================================================
 
-# Test the DecoderBlock class
 import torch
-from qt.models import QuantumDecoder
-from qnn.layers.qnn_circuit import QuantumNeuralNetworkCircuit
+import pytest
+from qaintum_qt.models.quantum_decoder import QuantumDecoder
 
-def test_decoder_block():
-    # Define parameters
-    embed_len = 64
-    num_heads = 8
-    num_layers = 2
-    num_wires = 6
-    quantum_nn = qnn_circuit
-    seq_len = 10
-    batch_size = 32
-    dropout = 0.1
-    mask = None
+class TestQuantumDecoder:
+    @pytest.fixture
+    def decoder(self):
+        """
+        Fixture to create a QuantumDecoder instance for testing.
+        """
+        embed_len = 16
+        num_heads = 4
+        num_layers = 2
+        num_wires = 4
+        cutoff_dim = 5
+        dropout = 0.1
+        return QuantumDecoder(
+            embed_len=embed_len,
+            num_heads=num_heads,
+            num_layers=num_layers,
+            num_wires=num_wires,
+            cutoff_dim=cutoff_dim,
+            dropout=dropout
+        )
 
-    # Create a quantum circuit
-    quantum_nn = QuantumNeuralNetworkCircuit(
-        num_wires=num_wires,
-        cutoff_dim=cutoff_dim,
-        num_layers=num_layers,
-        output_size="probabilities",
-    )
+    def test_initialization(self, decoder):
+        """
+        Test that the QuantumDecoder is initialized correctly.
+        """
+        assert isinstance(decoder, QuantumDecoder), "Decoder should be an instance of QuantumDecoder"
+        assert decoder.embed_len == 16, "Embedding length should match initialization"
+        assert isinstance(decoder.multihead_self_attention, torch.nn.Module), "Self-attention layer should be a PyTorch module"
+        assert isinstance(decoder.multihead_enc_dec_attention, torch.nn.Module), "Encoder-decoder attention layer should be a PyTorch module"
+        assert isinstance(decoder.first_norm, torch.nn.LayerNorm), "First normalization layer should be LayerNorm"
+        assert isinstance(decoder.quantum_feed_forward, torch.nn.Module), "Quantum feed-forward layer should be a PyTorch module"
 
-    # Create an instance of DecoderBlock
-    model = QuantumDecoder(embed_len, num_heads, num_layers, num_wires, quantum_nn, batch_size, dropout, mask)
+    def test_forward_pass(self, decoder):
+        """
+        Test the forward pass of the QuantumDecoder.
+        """
+        batch_size = 2
+        sequence_length = 10
+        embed_len = 16
 
-    # Create dummy input tensors
-    target = torch.rand(batch_size, seq_len, embed_len)
-    encoder_output = torch.rand(batch_size, seq_len, embed_len)
+        # Create dummy target and encoder output tensors
+        target = torch.randn(batch_size, sequence_length, embed_len)
+        encoder_output = torch.randn(batch_size, sequence_length, embed_len)
 
-    # Forward pass
-    output = model(target, encoder_output)
+        # Forward pass
+        output = decoder(target, encoder_output)
 
-    # Check the output shape
-    assert output.shape == (
-        batch_size, seq_len, embed_len), f"Expected output shape {(batch_size, seq_len, embed_len)}, but got {output.shape}"
-
-    # Check the output type
-    assert isinstance(
-        output, torch.Tensor), f"Expected output type torch.Tensor, but got {type(output)}"
-
-    print("Test passed!")
-
-    return output.shape
-
-test_decoder_block()
+        # Validate output shape
+        assert output.shape == (batch_size, sequence_length, embed_len), "Output shape should match input shape"

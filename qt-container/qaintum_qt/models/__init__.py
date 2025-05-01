@@ -13,6 +13,8 @@
 # limitations under the License.
 # ==============================================================================
 
+# qaintum_qt/models/__init__.py
+
 """
 This module initializes and defines the public API for the models package in the Quantum Transformer (QT).
 It includes core components required for constructing and training quantum-enhanced transformer models:
@@ -26,18 +28,16 @@ These models provide the foundation for developing quantum-native and hybrid qua
 
 Usage:
 To import all available models:
-    from QT.models import *
+    from qaintum_qt.models import *
 """
 
 from .quantum_decoder import QuantumDecoder
 from .quantum_encoder import QuantumEncoder
-from .quantum_feed_forward import QuantumFeedForward
 from .quantum_transformer import QuantumTransformer
 
 __all__ = [
     "QuantumDecoder",
     "QuantumEncoder",
-    "QuantumFeedForward",
     "QuantumTransformer",
 ]
 

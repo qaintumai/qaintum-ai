@@ -13,6 +13,8 @@
 # limitations under the License.
 # ==============================================================================
 
+# qaintum_qt/__init__.py
+
 """
 This module initializes and defines the public API for the layers package in the Quantum Transformer (QT).
 It provides essential components for building quantum transformers, including:
@@ -26,16 +28,18 @@ This API enables users to design and customize their own quantum learning models
 
 Usage:
 To import all available layers:
-    from QT.layers import *
+    from qaintum_qt.layers import *
 """
 
 from .input_embedding import InputEmbedding
 from .multi_headed_attention import MultiHeadedAttention
+from .quantum_feed_forward import QuantumFeedForward
 from .scaled_dot_product import ScaledDotProduct
 
 __all__ = [
     "InputEmbedding",
     "MultiHeadedAttention",
+    "QuantumFeedForward",
     "ScaledDotProduct",
 ]
 
