@@ -19,7 +19,7 @@ import pytest
 import torch
 import pennylane as qml
 
-from qnn.layers.qnn_data_encoder import QuantumDataEncoder
+from qaintum_qnn.layers.qnn_data_encoder import QuantumDataEncoder
 
 @pytest.fixture
 def setup_encoder():

@@ -20,9 +20,9 @@ import torch
 import numpy as np
 import pennylane as qml
 
-from qnn.layers.qnn_data_encoder import QuantumDataEncoder  # Import QuantumDataEncoder
-from qnn.layers.qnn_circuit import QuantumNeuralNetworkCircuit
-from qnn.utils.qnn_weight_init import QuantumWeightInitializer
+from qaintum_qnn.layers.qnn_data_encoder import QuantumDataEncoder  # Import QuantumDataEncoder
+from qaintum_qnn.layers.qnn_circuit import QuantumNeuralNetworkCircuit
+from qaintum_qnn.utils.qnn_weight_init import QuantumWeightInitializer
 
 @pytest.fixture
 def qnn_params():

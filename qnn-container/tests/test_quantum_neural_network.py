@@ -17,7 +17,7 @@
 
 import pytest
 import torch
-from qnn.models.quantum_neural_network import QuantumNeuralNetwork
+from qaintum_qnn.models.quantum_neural_network import QuantumNeuralNetwork
 
 @pytest.fixture
 def qnn_model():

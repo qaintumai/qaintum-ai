@@ -19,7 +19,7 @@ import pytest
 import pennylane as qml
 import torch
 
-from qnn.layers.qnn_layer import QuantumNeuralNetworkLayer
+from qaintum_qnn.layers.qnn_layer import QuantumNeuralNetworkLayer
 
 @pytest.fixture
 def setup_qnn_layer():

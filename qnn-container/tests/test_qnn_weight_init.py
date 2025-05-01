@@ -18,7 +18,7 @@
 import pytest
 import torch
 import numpy as np
-from qnn.utils.qnn_weight_init import QuantumWeightInitializer
+from qaintum_qnn.utils.qnn_weight_init import QuantumWeightInitializer
 
 
 @pytest.mark.parametrize("method", ["normal", "uniform", "xavier", "kaiming"])

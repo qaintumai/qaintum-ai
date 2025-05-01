@@ -17,7 +17,7 @@
 
 import pytest
 import torch
-from qnn.utils.normalization import (
+from qaintum_qnn.utils.normalization import (
     ZScoreNormalization,
     MinMaxScaling,
     NormalizeToRange,

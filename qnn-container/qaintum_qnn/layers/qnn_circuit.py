@@ -13,13 +13,13 @@
 # limitations under the License.
 # ==============================================================================
 
-# qnn/layers/qnn_circuit.py
+# qaintum_qnn/layers/qnn_circuit.py
 
 import torch
 import pennylane as qml
-from qnn.layers.qnn_data_encoder import QuantumDataEncoder
-from qnn.layers.qnn_layer import QuantumNeuralNetworkLayer
-from qnn.utils.qnn_weight_init import QuantumWeightInitializer
+from qaintum_qnn.layers.qnn_data_encoder import QuantumDataEncoder
+from qaintum_qnn.layers.qnn_layer import QuantumNeuralNetworkLayer
+from qaintum_qnn.utils.qnn_weight_init import QuantumWeightInitializer
 
 class QuantumNeuralNetworkCircuit:
     def __init__(self, num_wires, cutoff_dim, num_layers, output_size="single", init_method='normal', active_sd=0.0001, passive_sd=0.1, gain=1.0, encoder=None):

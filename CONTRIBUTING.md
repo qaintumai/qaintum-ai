@@ -17,7 +17,7 @@ We are always open to new ideas! To suggest a feature, please open an issue on o
 ### Submitting Pull Requests
 We love pull requests! If you want to contribute code to the project, please follow these steps:
 
-#### Fork the repository: 
+#### Fork the repository:
 Click the "Fork" button at the top of this page to create a copy of the repository under your GitHub account.
 
 #### Clone your fork:
@@ -32,7 +32,7 @@ Click the "Fork" button at the top of this page to create a copy of the reposito
 * sh
 * Copy code
 * git checkout -b feature-name
-  
+
 #### Make your changes: Implement your changes in the codebase.
 
 #### Write tests: Ensure your changes are covered by tests.
@@ -50,7 +50,7 @@ Click the "Fork" button at the top of this page to create a copy of the reposito
 * Copy code
 * git push origin feature-name
 
-#### Create a pull request: 
+#### Create a pull request:
 Go to the original repository and click the "New pull request" button. Select the branch you just pushed to and submit the pull request.
 
 ### Code Style

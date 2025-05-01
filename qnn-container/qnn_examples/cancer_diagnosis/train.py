@@ -17,12 +17,12 @@
 
 import numpy as np
 import torch
-from qnn.models.quantum_neural_network import QuantumNeuralNetwork
 from data_processing import load_data, preprocess_labels, shuffle_data
 from visualization import plotResults
 from training_utils import train
 from model_builder import get_model
-from qnn.utils.normalization import NormalizeToRadians
+from qaintum_qnn.utils.normalization import NormalizeToRadians
+from qaintum_qnn.models.quantum_neural_network import QuantumNeuralNetwork
 
 def main() -> None:
     # Step 1: Load the data using the load_data function
