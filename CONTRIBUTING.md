@@ -24,7 +24,7 @@ Click the "Fork" button at the top of this page to create a copy of the reposito
 
 * sh
 * Copy code
-* git clone https://github.com/qaintumai/quantum.git
+* git clone [https://github.com/qaintumai/qaintum-ai.git]
 * cd repository
 
 #### Create a new branch: Use a descriptive name for your branch.
