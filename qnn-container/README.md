@@ -39,17 +39,35 @@ Ensure you have the following installed:
 
 ### **Installation**
 
+#### **Option 1: Install from PyPI**
+
+The easiest way to use this package is to install it directly from PyPI:
+
+```bash
+pip install qaintum-qnn
+```
+
+#### **Option 2: Install from Source**
+
+If you want to install the package from the source code (e.g., for development or testing), follow these steps:
+
 1. Clone the repository:
     ```bash
     git clone https://github.com/qaintumai/qaintum-ai/qnn-container.git
-    cd quantum
+    cd qnn-container
     ```
 2. Create and activate a virtual environment:
+   **macOS/Linux:**
     ```bash
     python3 -m venv venv
     source venv/bin/activate
     ```
-3. Install the required packages:
+   **Windows:**
+    ```bash
+    python -m venv venv
+    .\venv\Scripts\activate
+    ```
+4. Install the required packages:
     ```bash
     pip install -r requirements.txt
     ```
