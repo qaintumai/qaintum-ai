@@ -13,7 +13,7 @@
 # limitations under the License.
 # ==============================================================================
 
-# qnn/layers/qnn_weight_init.py
+# qnn/utils/qnn_weight_init.py
 
 import torch
 import numpy as np

@@ -26,13 +26,34 @@ To import the entire API from layers:
     from qnn.layers import *
 
 To import specific components:
-    from qnn import QuantumNeuralNetwork, WeightInitializer
+    from qnn import QuantumNeuralNetwork, ZScoreNormalization, MinMaxScaling
+
 """
 
+# Import core components from submodules
 from .models import QuantumNeuralNetwork
-from .layers import *
+from .layers import (
+    QuantumDataEncoder,
+    QuantumNeuralNetworkLayer,
+    QuantumNeuralNetworkCircuit,
+)
+from .utils import (
+    QuantumWeightInitializer,
+    ZScoreNormalization,
+    MinMaxScaling,
+    NormalizeToRange,
+    NormalizeToRadians,
+)
 
+# Define __all__ to specify what is exported when `from qnn import *` is used
 __all__ = [
-           "QuantumNeuralNetwork",
-          ]
-
+    "QuantumNeuralNetwork",
+    "QuantumDataEncoder",
+    "QuantumNeuralNetworkLayer",
+    "QuantumNeuralNetworkCircuit",
+    "QuantumWeightInitializer",
+    "ZScoreNormalization",
+    "MinMaxScaling",
+    "NormalizeToRange",
+    "NormalizeToRadians",
+]

@@ -3,8 +3,8 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "qaintum-qnn"
-version = "0.1.1dev1"
+name = "qaintum_qnn"
+version = "0.1.1.dev1"
 description = "Quantum Neural Networks (QNN) framework for quantum-enhanced machine learning."
 authors = [
     {name = "Sophie Choe", email = "sophie.choe@qaintum.ai"},
@@ -16,14 +16,13 @@ readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.8"
 dependencies = [
-    "torch==2.2.2",
-    "torchvision==0.17.2",
-    "PennyLane==0.29.1",
-    "PennyLane-SF==0.29.1",
-    "numpy==1.23.5",
-    "scipy==1.10.1",
+    "torch>=2.2,<2.3",
+    "torchvision>=0.17,<0.18",
+    "PennyLane>=0.29,<0.30",
+    "PennyLane-SF>=0.29,<0.30",
+    "numpy>=1.23,<1.24",
+    "scipy>=1.10,<1.11",
     "sympy>=1.10",
-    "setuptools==65.5.0",
 ]
 
 [project.optional-dependencies]
@@ -33,11 +32,11 @@ dev = [
     "flake8",
     "mypy",
     "pre-commit",
-    "pytest-cov",  # Add pytest-cov for coverage reporting
+    "pytest-cov",
 ]
 
 [tool.setuptools]
-packages = ["qnn"]
+packages = {find = {}}
 
 [tool.black]
 line-length = 88
@@ -55,3 +54,8 @@ testpaths = ["tests"]  # Specify the directory containing tests
 filterwarnings = [
     "ignore::DeprecationWarning",  # Suppress all DeprecationWarnings
 ]
+
+[project.urls]
+Homepage = "https://github.com/qaintumai/qaintum-ai/tree/main/qnn-container"
+Documentation = "https://github.com/qaintumai/qaintum-ai/tree/main/qnn-container/docs"
+Repository = "https://github.com/qaintumai/qaintum-ai/tree/main/qnn-container"
