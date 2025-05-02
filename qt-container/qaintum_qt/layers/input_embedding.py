@@ -13,6 +13,8 @@
 # limitations under the License.
 # ==============================================================================
 
+# qaintum_qt/layers/input_embedding.py
+
 import torch
 from torch import nn
 
@@ -39,7 +41,7 @@ class InputEmbedding(nn.Module):
         - dropout (float, optional): Dropout rate for regularization. Default is 0.1.
         - device (str, optional): Device to run the model on ('cpu' or 'cuda'). Default is 'cpu'.
         """
-        
+
         super(InputEmbedding, self).__init__()
         self.input_vocab_size = input_vocab_size
         self.embed_len = embed_len
@@ -53,7 +55,7 @@ class InputEmbedding(nn.Module):
             self.input_vocab_size, self.embed_len).to(self.device)
         self.dropoutLayer = nn.Dropout(p=self.dropout)
 
-    
+
     def forward(self, input):
         """
         Computes the embeddings and positional encodings for the input data.
@@ -64,7 +66,7 @@ class InputEmbedding(nn.Module):
         Returns:
         - torch.Tensor: Tensor containing the combined token embeddings and positional encodings with dropout applied.
         """
-        
+
         # Compute the token embeddings
         first_embedding = self.firstEmbedding(input).to(self.device)
         batch_size, seq_len = input.shape

@@ -17,8 +17,8 @@
 
 import torch
 import pytest
-from qt.layers.input_embedding import InputEmbedding
-from qt.utils.device import get_device  # Ensure this utility exists and is imported properly
+from qaintum_qt.layers.input_embedding import InputEmbedding
+from qaintum_qt.utils.device import get_device  # Ensure this utility exists and is imported properly
 
 @pytest.fixture
 def setup_input_embedding():

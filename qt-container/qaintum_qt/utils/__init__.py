@@ -13,12 +13,11 @@
 # limitations under the License.
 # ==============================================================================
 
-# qt/utils/device.py
+from .device import get_device
+from .qff_config import determine_qnn_parameters, find_optimal_cutoff_and_wires
 
-import torch
-
-def get_device():
-    """
-    Returns the available PyTorch device ('cuda' if available, else 'cpu').
-    """
-    return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+__all__ = [
+    "get_device",
+    "determine_qnn_parameters",
+    "find_optimal_cutoff_and_wires"
+]

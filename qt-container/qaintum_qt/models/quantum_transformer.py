@@ -13,10 +13,10 @@
 # limitations under the License.
 # ==============================================================================
 
-# qt/models/quantum_transformer.py
+# qaintum_qt/models/quantum_transformer.py
 
 import torch.nn as nn
-from qnn.models.qnn_circuit import QuantumNeuralNetworkCircuit
+from qaintum_qnn.layers.qnn_circuit import QuantumNeuralNetworkCircuit
 
 class QuantumTransformer(nn.Module):
     def __init__(self, num_encoder_layers, num_decoder_layers, embed_len, num_heads, num_layers, num_wires, cutoff_dim, batch_size, vocab_size, output_size="probabilities", dropout=0.1, device='cpu'):

@@ -13,15 +13,15 @@
 # limitations under the License.
 # ==============================================================================
 
-# qt.models.quantum_decoder.py
+# qaintum_qt/models/quantum_decoder.py
 
 # Define the QuantumDecoder class
 from torch import nn
-from layers.multi_headed_attention import MultiHeadedAttention
-from models.quantum_feed_forward import QuantumFeedForward
+from qaintum_qt.layers.multi_headed_attention import MultiHeadedAttention
+from qaintum_qt.layers.quantum_feed_forward import QuantumFeedForward
 
 class QuantumDecoder(nn.Module):
-    def __init__(self, embed_len, num_heads, num_layers, num_wires, quantum_nn, dropout=0.1, mask=None):
+    def __init__(self, embed_len, num_heads, num_layers, num_wires, cutoff_dim, dropout=0.1, mask=None):
         super(QuantumDecoder, self).__init__()
         self.embed_len = embed_len
         self.multihead_self_attention = MultiHeadedAttention(

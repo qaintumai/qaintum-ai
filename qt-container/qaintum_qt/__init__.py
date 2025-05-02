@@ -23,18 +23,21 @@ essential components from these submodules.
 
 Usage:
 To import all available layers:
-    from QT.layers import *
+    from qaintum_qt.layers import *
 
 To import specific components:
-    from QT import QuantumTransformer, QuantumEncoder, QuantumDecoder
+    from qaintum_qt import QuantumTransformer, QuantumEncoder, QuantumDecoder
 """
 
-from .models import QuantumTransformer, QuantumEncoder, QuantumDecoder, QuantumFeedForward
-from .layers import *
+from .models import QuantumTransformer, QuantumEncoder, QuantumDecoder
+from .layers import InputEmbedding, MultiHeadedAttention, QuantumFeedForward, ScaledDotProduct
 
 __all__ = [
+    "InputEmbedding",
+    "MultiHeadedAttention",
+    "QuantumFeedForward",
+    "ScaledDotProduct",
     "QuantumTransformer",
     "QuantumEncoder",
     "QuantumDecoder",
-    "QuantumFeedForward",
 ]

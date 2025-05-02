@@ -15,7 +15,7 @@
 
 import pytest
 import torch
-from qt.layers.multi_headed_attention import MultiHeadedAttention
+from qaintum_qt.layers.multi_headed_attention import MultiHeadedAttention
 
 
 @pytest.fixture

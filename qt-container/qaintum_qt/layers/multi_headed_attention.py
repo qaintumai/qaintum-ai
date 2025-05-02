@@ -13,9 +13,11 @@
 # limitations under the License.
 # ==============================================================================
 
-from torch import nn
-from qt-container.qt.layers.scaled_dot_product import ScaledDotProduct
+# qaintum_qt/layers/multi_headed_attention.py
+
 import torch
+from torch import nn
+from .scaled_dot_product import ScaledDotProduct  # Import from the same directory
 
 class MultiHeadedAttention(nn.Module):
     """
