@@ -13,72 +13,141 @@
 # limitations under the License.
 # ==============================================================================
 
-# qaintum_qt/models/quantum_feed_forward.py
+# qaintum_qt/layers/quantum_feed_forward.py
 
-from torch import nn
+import torch
+import torch.nn as nn
+from qaintum_qt.utils.qff_config import determine_qnn_parameters
 from qaintum_qnn.models.quantum_neural_network import QuantumNeuralNetwork
 
 class QuantumFeedForward(nn.Module):
     """
-    A class used to define a feedforward block for a quantum neural network.
+    Quantum Feed-Forward Layer built on top of QuantumNeuralNetwork.
 
-    Usage:
-    To use the QuantumFeedForward class, import it as follows:
-    from layers.quantum_feed_forward import QuantumFeedForward
-
-    Example:
-    model = QuantumFeedForward(num_layers=2, num_wires=4, cutoff_dim=10, embed_len=64)
-    output = model(input_tensor)
+    Parameters:
+    - task_type (str): Type of task ("sequence", "classification", "regression", "generation").
+    - vocab_size (int, optional): Vocabulary size for sequence-to-sequence or generation tasks.
+    - num_classes (int, optional): Number of classes for classification tasks.
+    - sequence_length (int, optional): Sequence length for sequence-to-sequence or generation tasks.
+    - init_method (str, optional): Weight initialization method ("normal", "uniform", "xavier", "kaiming").
+    - active_sd (float, optional): Std. dev. for active gate weights.
+    - passive_sd (float, optional): Std. dev. for passive gate weights.
+    - gain (float, optional): Gain factor applied to weights.
+    - normalize_inputs (bool, optional): Whether to normalize inputs to the circuit.
+    - dropout_rate (float, optional): Dropout rate on the output during training.
     """
-
-    def __init__(self, num_layers, num_wires, cutoff_dim, embed_len, dropout=0.1, output_size="probabilities"):
-        """
-        Initializes the QuantumFeedForward class with the given parameters.
-
-        Parameters:
-        - num_layers (int): Number of layers in the quantum neural network.
-        - num_wires (int): Number of wires (qubits/qumodes) in the quantum circuit.
-        - cutoff_dim (int): Cutoff dimension for the Fock space representation.
-        - embed_len (int): Length of the embedding vector.
-        - dropout (float, optional): Dropout rate for regularization. Default is 0.1.
-        - output_size (str, optional): Output type of the quantum circuit ("single", "multi", or "probabilities").
-        """
+    def __init__(self, task_type, vocab_size=None, num_classes=None, sequence_length=None,
+                 init_method='normal', active_sd=0.0001, passive_sd=0.1, gain=1.0,
+                 normalize_inputs=True, dropout_rate=0.0, **kwargs):
         super(QuantumFeedForward, self).__init__()
-        self.num_layers = num_layers
-        self.num_wires = num_wires
-        self.cutoff_dim = cutoff_dim
-        self.embed_len = embed_len
+        self.task_type = task_type
+        self.vocab_size = vocab_size
+        self.num_classes = num_classes
+        self.sequence_length = sequence_length
 
-        # Initialize the quantum neural network (QNN)
-        self.quantum_nn = QuantumNeuralNetworkCircuit(
-            num_wires=num_wires,
-            cutoff_dim=cutoff_dim,
-            num_layers=num_layers,
-            output_size=output_size
+        # Validate task type
+        if task_type not in ["sequence", "classification", "regression", "generation"]:
+            raise ValueError(f"Unsupported task type: {task_type}")
+
+        # Validate required parameters
+        if task_type in ["sequence", "generation"]:
+            if vocab_size is None or sequence_length is None:
+                raise ValueError("vocab_size and sequence_length must be provided for sequence or generation tasks.")
+        elif task_type == "classification":
+            if num_classes is None:
+                raise ValueError("num_classes must be provided for classification tasks.")
+
+        # Determine QNN parameters based on task type
+        params = determine_qnn_parameters(
+            task_type=task_type,
+            vocab_size=vocab_size,
+            num_classes=num_classes,
+            sequence_length=sequence_length
+        )
+        self.cutoff_dim = params["cutoff_dim"]
+        self.num_wires = params["num_wires"]
+        self.output_size = params["output_size"]
+
+        # Initialize QuantumNeuralNetwork
+        self.quantum_network = QuantumNeuralNetwork(
+            num_wires=self.num_wires,
+            cutoff_dim=self.cutoff_dim,
+            num_layers=2,
+            output_size=self.output_size,
+            init_method=init_method,
+            active_sd=active_sd,
+            passive_sd=passive_sd,
+            gain=gain,
+            normalize_inputs=normalize_inputs,
+            dropout_rate=dropout_rate
         )
 
-        # Define the quantum feedforward layers
-        self.qnn_model = self.quantum_nn.build_circuit()
-        self.dropout_layer = nn.Dropout(p=dropout)
-        self.layer_norm = nn.LayerNorm(embed_len)
-
-    def forward(self, x):
+    def forward(self, inputs):
         """
-        Applies the feedforward block to the input tensor.
-
-        Parameters:
-        - x (torch.Tensor): Input tensor.
-
-        Returns:
-        - torch.Tensor: Output tensor after applying feedforward, dropout, and layer normalization.
+        Performs a forward pass through the quantum feed-forward layer and reshapes the output
+        based on the task type.
         """
-        # Ensure the input tensor matches the number of wires
-        if x.shape[-1] != self.num_wires:
-            raise ValueError(f"Input tensor must have {self.num_wires} features to match the number of wires.")
+        quantum_output = self.quantum_network(inputs)
+        print(f"Quantum output shape: {quantum_output.shape}")
 
-        # Apply the quantum circuit
-        ff_output = self.qnn_model(x)
+        batch_size = inputs.size(0)
 
-        # Apply dropout and layer normalization
-        ff_output = self.dropout_layer(ff_output)
-        return self.layer_norm(ff_output + x)
+        if self.task_type == "sequence":
+            embedding_size = inputs.size(-1)
+            required_total_size = batch_size * self.sequence_length * embedding_size
+
+            if quantum_output.numel() < required_total_size:
+                raise ValueError(
+                    f"Quantum output size ({quantum_output.numel()}) is smaller than "
+                    f"the required size ({required_total_size})."
+                )
+
+            # Truncate if needed
+            quantum_output = quantum_output.flatten()[:required_total_size]
+            reshaped_output = quantum_output.view(batch_size, self.sequence_length, embedding_size)
+
+        elif self.task_type == "generation":
+            required_total_size = batch_size * self.sequence_length * self.vocab_size
+
+            if quantum_output.numel() < required_total_size:
+                raise ValueError(
+                    f"Quantum output size ({quantum_output.numel()}) is smaller than "
+                    f"the required size ({required_total_size})."
+                )
+
+            # Truncate if needed
+            quantum_output = quantum_output.flatten()[:required_total_size]
+            reshaped_output = quantum_output.view(batch_size, self.sequence_length, self.vocab_size)
+
+            # Apply softmax to get token probabilities
+            reshaped_output = torch.softmax(reshaped_output, dim=-1)
+
+        elif self.task_type == "classification":
+            if self.num_classes <= 10:
+                # Expect direct multi-class output shape
+                expected_shape = (batch_size, self.num_classes)
+                if quantum_output.numel() < batch_size * self.num_classes:
+                    raise ValueError(
+                        f"Quantum output size ({quantum_output.numel()}) is smaller than "
+                        f"the required size ({batch_size * self.num_classes}) for multi-class output."
+                    )
+                reshaped_output = quantum_output.view(expected_shape)
+            else:
+                # Expect flattened probabilities, truncate to num_classes
+                required_total_size = batch_size * self.num_classes
+                if quantum_output.numel() < required_total_size:
+                    raise ValueError(
+                        f"Quantum output size ({quantum_output.numel()}) is smaller than "
+                        f"the required size ({required_total_size}) for probability output."
+                    )
+                quantum_output = quantum_output.flatten()[:required_total_size]
+                reshaped_output = quantum_output.view(batch_size, self.num_classes)
+
+        elif self.task_type == "regression":
+            reshaped_output = quantum_output
+
+        else:
+            raise ValueError(f"Unsupported task type: {self.task_type}")
+
+        return reshaped_output
+
