@@ -17,10 +17,14 @@
 
 import torch
 import pandas as pd
+import numpy as np  # Ensure numpy is imported
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from .custom_encoder import CustomFeatureEncoder
 from qaintum_qnn.models.quantum_neural_network import QuantumNeuralNetwork
+
+# Set device to GPU if available, otherwise fallback to CPU
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Original Google Drive shareable link
 url = "https://drive.google.com/uc?id=10dUF-cSRUfE5SzMuCSjiVwvW8FytBpHl"
@@ -60,11 +64,11 @@ def normalize_angle_magnitude(X_train, angle_dim=5):
 X_train_normalized = normalize_angle_magnitude(X_train)
 X_test_normalized = normalize_angle_magnitude(X_test)
 
-# Convert to PyTorch tensors
-X_train_tensor = torch.tensor(X_train_normalized, dtype=torch.float32)
-X_test_tensor = torch.tensor(X_test_normalized, dtype=torch.float32)
-y_train_tensor = torch.tensor(y_train, dtype=torch.float32)
-y_test_tensor = torch.tensor(y_test, dtype=torch.float32)
+# Convert to PyTorch tensors and move them to the correct device
+X_train_tensor = torch.tensor(X_train_normalized, dtype=torch.float32).to(device)
+X_test_tensor = torch.tensor(X_test_normalized, dtype=torch.float32).to(device)
+y_train_tensor = torch.tensor(y_train, dtype=torch.float32).to(device)
+y_test_tensor = torch.tensor(y_test, dtype=torch.float32).to(device)
 
 # Initialize the custom encoder
 num_wires = 8
@@ -84,6 +88,9 @@ model = QuantumNeuralNetwork(
     dropout_rate=0.1,
     encoder=custom_encoder
 )
+
+# Move model to the correct device (GPU or CPU)
+model.to(device)
 
 # Define loss function and optimizer
 criterion = torch.nn.MSELoss()  # Mean Squared Error Loss for regression

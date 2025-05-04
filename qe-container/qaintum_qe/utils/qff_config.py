@@ -13,7 +13,7 @@
 # limitations under the License.
 # ==============================================================================
 
-# qaintum_qt/utils/qff_config.py
+# qaintum_qe/utils/qff_config.py
 
 def find_optimal_cutoff_and_wires(target_output_size, max_cutoff_dim=10, max_num_wires=10):
     """
@@ -45,29 +45,21 @@ def find_optimal_cutoff_and_wires(target_output_size, max_cutoff_dim=10, max_num
 
     return optimal_cutoff_dim, optimal_num_wires
 
-def determine_qnn_parameters(task_type, vocab_size=None, num_classes=None, sequence_length=None):
+def determine_qnn_parameters(task_type, num_classes=None):
     """
     Determines the optimal cutoff_dim, num_wires, and output_size based on the task type.
+
     Parameters:
-    - task_type (str): Type of task ("sequence", "classification", "regression", "generation").
-    - vocab_size (int, optional): Vocabulary size for sequence-to-sequence or generation tasks.
+    - task_type (str): Type of task ("classification", "regression").
     - num_classes (int, optional): Number of classes for classification tasks.
-    - sequence_length (int, optional): Sequence length for sequence-to-sequence or generation tasks.
+
     Returns:
     - dict: Dictionary containing cutoff_dim, num_wires, and output_size.
     """
-    if task_type == "sequence" or task_type == "generation":
-        if vocab_size is None:
-            raise ValueError("vocab_size must be provided for sequence or generation tasks.")
-        if sequence_length is None:
-            raise ValueError("sequence_length must be provided for sequence or generation tasks.")
-        required_output_size = vocab_size * sequence_length
-        cutoff_dim, num_wires = find_optimal_cutoff_and_wires(required_output_size)
-        output_size = "probabilities"
-
-    elif task_type == "classification":
+    if task_type == "classification":
         if num_classes is None:
             raise ValueError("num_classes must be provided for classification tasks.")
+
         # Set num_wires equal to num_classes for small num_classes
         if num_classes <= 10:
             cutoff_dim = 3
@@ -91,4 +83,3 @@ def determine_qnn_parameters(task_type, vocab_size=None, num_classes=None, seque
         "num_wires": num_wires,
         "output_size": output_size,
     }
-

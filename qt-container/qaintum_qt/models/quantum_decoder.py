@@ -21,7 +21,8 @@ from qaintum_qt.layers.multi_headed_attention import MultiHeadedAttention
 from qaintum_qt.layers.quantum_feed_forward import QuantumFeedForward
 
 class QuantumDecoder(nn.Module):
-    def __init__(self, embed_len, num_heads, num_layers, num_wires, cutoff_dim, dropout=0.1, mask=None):
+    def __init__(self, embed_len=None, num_heads, task_type, num_classes=None, sequence_length=None, init_method, active_sd=0.0001, passive_sd=0.1, gain=1.0,
+                 normalize_inputs=True, dropout_rate=0.0, mask=None, **kwargs):
         super(QuantumDecoder, self).__init__()
         self.embed_len = embed_len
         self.multihead_self_attention = MultiHeadedAttention(
@@ -31,8 +32,9 @@ class QuantumDecoder(nn.Module):
         self.first_norm = nn.LayerNorm(self.embed_len)
         self.second_norm = nn.LayerNorm(self.embed_len)
         self.third_norm = nn.LayerNorm(self.embed_len)
-        self.dropout_layer = nn.Dropout(p=dropout)
-        self.quantum_feed_forward = QuantumFeedForward(2, num_wires, cutoff_dim, embed_len, dropout=0.1, output_size="probabilities")
+        self.dropout_layer = nn.Dropout(p=dropout_rate)
+        self.quantum_feed_forward = QuantumFeedForward(task_type, vocab_size=embed_length, num_classes=None, sequence_length=None,
+                 init_method, active_sd, passive_sd, gain, normalize_inputs, dropout_rate, **kwargs):
 
     def forward(self, target, encoder_output):
         # Self attention
